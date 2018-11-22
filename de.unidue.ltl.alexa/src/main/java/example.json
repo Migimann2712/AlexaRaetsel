@@ -1,0 +1,42 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "raetsel master",
+            "intents": [
+                {
+                    "name": "raetsel_master",
+                    "slots": [
+                        {
+                            "name": "Alles",
+                            "type": "ALLES"
+                        }
+                    ],
+                    "samples": [
+                        "{Alles}"
+                    ]
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                }
+            ],
+            "types": [
+                {
+                    "name": "ALLES",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "hoodwink ersichtlich kasino ländereien fraktur größten luftschiff puffer"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "furchtlos höllenfeuer schuld konzert tausch schmutzig ziellos zyanid"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

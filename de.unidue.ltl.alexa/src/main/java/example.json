@@ -1,7 +1,7 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "raetsel master",
+            "invocationName": "rätsel master",
             "intents": [
                 {
                     "name": "raetsel_master",

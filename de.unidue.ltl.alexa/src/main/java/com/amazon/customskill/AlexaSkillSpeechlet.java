@@ -140,7 +140,7 @@ public class AlexaSkillSpeechlet
      * The first question presented to the skill user (entry point)
      */
     private SpeechletResponse getWelcomeResponse(){
-        return askUserResponse("Willkommen bei raetsel master. Soll ich dir die Spielregeln erklären");
+        return askUserResponse("Willkommen bei rätsel master. Soll ich dir die Spielregeln erklären");
     }
 
     /**

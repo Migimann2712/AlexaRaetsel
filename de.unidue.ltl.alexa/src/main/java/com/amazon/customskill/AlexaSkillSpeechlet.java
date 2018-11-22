@@ -140,7 +140,7 @@ public class AlexaSkillSpeechlet
      * The first question presented to the skill user (entry point)
      */
     private SpeechletResponse getWelcomeResponse(){
-        return askUserResponse("<amazon:effect name=\"whispered\">Hey Leute</amazon:effect>, ich bin ein <phoneme alphabet=\"ipa\" ph=\"ˈfʌni\">funny</phoneme> Nomen <phoneme alphabet=\"ipa\" ph=\"bɒt\">bot</phoneme>! Sag einen Satz und ich nenne dir die enthaltenen Nomen");
+        return askUserResponse("Willkommen bei raetsel master. Soll ich dir die Spielregeln erkl�ren");
     }
 
     /**

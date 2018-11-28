@@ -4,7 +4,7 @@
 
 <p align=center style="font-family: Arial, Verdana; font-size:500%">
 <%
-    String a = com.amazon.customskill.AlexaSkillSpeechlet.userRequest;
+	String a = com.amazon.customskill.AlexaSkillSpeechlet.spielregelnRequest;
 	if (a==null){
 	    a = "--init--";
 	}

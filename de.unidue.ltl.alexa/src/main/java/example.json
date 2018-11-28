@@ -4,15 +4,18 @@
             "invocationName": "r�tsel master",
             "intents": [
                 {
-                    "name": "raetsel_master",
+                    "name": "Spielbeginn",
                     "slots": [
                         {
-                            "name": "Alles",
-                            "type": "ALLES"
+                            "name": "Spielregeln",
+                            "type": "YES_NO_SLOT",
+                            "samples": [
+                                "{Spielregeln}"
+                            ]
                         }
                     ],
                     "samples": [
-                        "{Alles}"
+                        "{Spielregeln}"
                     ]
                 },
                 {
@@ -22,21 +25,54 @@
             ],
             "types": [
                 {
-                    "name": "ALLES",
+                    "name": "YES_NO_SLOT",
                     "values": [
                         {
+                            "id": "TRUE",
                             "name": {
-                                "value": "hoodwink ersichtlich kasino ländereien fraktur größten luftschiff puffer"
+                                "value": "ja"
                             }
                         },
                         {
+                            "id": "FALSE",
                             "name": {
-                                "value": "furchtlos höllenfeuer schuld konzert tausch schmutzig ziellos zyanid"
+                                "value": "nein"
                             }
                         }
                     ]
                 }
             ]
-        }
+        },
+        "dialog": {
+            "intents": [
+                {
+                    "name": "Spielbeginn",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "Spielregeln",
+                            "type": "YES_NO_SLOT",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.659222329916.1185673323025"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "prompts": [
+            {
+                "id": "Elicit.Slot.659222329916.1185673323025",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "Soll ich dir die Spielregel erkl�ren?"
+                    }
+                ]
+            }
+        ]
     }
 }

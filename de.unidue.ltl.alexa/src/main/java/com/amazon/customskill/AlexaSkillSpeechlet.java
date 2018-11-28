@@ -40,7 +40,7 @@ import nlp.dkpro.backend.NlpSingleton;
 public class AlexaSkillSpeechlet
     implements SpeechletV2
 {
-    public static String userRequest;
+    public static String spielregelnRequest;
 
     static Logger logger = LoggerFactory.getLogger(AlexaSkillSpeechlet.class);
 
@@ -65,14 +65,22 @@ public class AlexaSkillSpeechlet
         IntentRequest request = requestEnvelope.getRequest();
 
         Intent intent = request.getIntent();
-
-        userRequest = intent.getSlot("Alles").getValue();
-        logger.info("Received following text: [" + userRequest + "]");
-
-        String result = analyze(userRequest);
         
+        //userRequests
+        spielregelnRequest = intent.getSlot("Spielregeln").getValue();
+        //String intentName = intent.getName();
+        
+        logger.info("Received following text: [" + spielregelnRequest + "]");
+        
+        String result="";
+        
+        System.out.println(spielregelnRequest);
+        System.out.println(intent.getName());
+        result =responseSpielregeln(spielregelnRequest);
+   
+  
         // use this method if you want to repond with a simple text
-        return response("Erkannte Nomen: " + result);
+        return response(result);
 //        return responseWithFlavour("Erkannte Nomen: " + result, new Random().nextInt(5));
     }
 
@@ -82,6 +90,17 @@ public class AlexaSkillSpeechlet
      * @param i
      * @return
      */
+    
+    private String responseSpielregeln(String request) {
+    	if(request.equals("Ja")) {
+    		return "Hier sind die Spielregeln!";
+    	}
+    	else if(request.equals("nein")) {
+    		return "Möchtest du ein Kinder- oder Erwachsenenrätsel?";
+    	}
+    	else return "Error";
+    }
+    
     private SpeechletResponse responseWithFlavour(String text, int i) {
        
     	SsmlOutputSpeech speech = new SsmlOutputSpeech();
@@ -116,7 +135,7 @@ public class AlexaSkillSpeechlet
     {
         List<String> nouns = new ArrayList<>();
         try {
-            nouns = p.findNouns(userRequest);
+            nouns = p.findNouns(spielregelnRequest);
             logger.info("Detected following nouns: [" + StringUtils.join(nouns, " ") + "]");
         }
         catch (Exception e) {

@@ -90,7 +90,7 @@ public class AlexaSkillSpeechlet
      * @param i
      * @return
      */
-    
+    //kommentar
     private String responseSpielregeln(String request) {
     	if(request.equals("Ja")) {
     		return "Hier sind die Spielregeln!";

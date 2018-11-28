@@ -41,6 +41,7 @@ public class AlexaSkillSpeechlet
     implements SpeechletV2
 {
     public static String spielregelnRequest;
+    public static String rätselArtRequest;
 
     static Logger logger = LoggerFactory.getLogger(AlexaSkillSpeechlet.class);
 
@@ -68,6 +69,7 @@ public class AlexaSkillSpeechlet
         
         //userRequests
         spielregelnRequest = intent.getSlot("Spielregeln").getValue();
+        rätselArtRequest = intent.getSlot("Raetselart").getValue();
         //String intentName = intent.getName();
         
         logger.info("Received following text: [" + spielregelnRequest + "]");

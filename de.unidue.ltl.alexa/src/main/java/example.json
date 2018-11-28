@@ -12,7 +12,14 @@
                             "samples": [
                                 "{Spielregeln}"
                             ]
-                        }//kommtentar
+                        },
+                        {
+                            "name": "Raetselart",
+                            "type": "ErwachsenenKind_SLOT",
+                            "samples": [
+                                "{Raetselart}"
+                            ]
+                        }
                     ],
                     "samples": [
                         "{Spielregeln}"
@@ -40,6 +47,21 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "ErwachsenenKind_SLOT",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "Kinderraetsel"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Erwachsenenraetsel"
+                            }
+                        }
+                    ]
                 }
             ]
         },
@@ -58,6 +80,15 @@
                             "prompts": {
                                 "elicitation": "Elicit.Slot.659222329916.1185673323025"
                             }
+                        },
+                        {
+                            "name": "Raetselart",
+                            "type": "ErwachsenenKind_SLOT",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.1004705007804.298766793861"
+                            }
                         }
                     ]
                 }
@@ -70,6 +101,15 @@
                     {
                         "type": "PlainText",
                         "value": "Soll ich dir die Spielregel erklären?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.1004705007804.298766793861",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "Möchtest du ein Kinder- oder Erwachsenenrätsel?"
                     }
                 ]
             }

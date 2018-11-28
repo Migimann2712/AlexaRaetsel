@@ -99,7 +99,7 @@ public class AlexaSkillSpeechlet
     //kommentar
     private String responseSpielregeln(String request) {
     	if(request.equals("Ja")) {
-    		return "Hier sind die Spielregeln!";
+    		return "Okay. Ich nenn dir ein Rätsel. Wenn du einen Tipp benötigst sag: Alexa, ich brauche einen Tipp! Wenn du die Antwort nicht weißt kann ich dir auch die Lösung verraten. Möchtest du ein Kinder- oder Erwachsenenrätsel?";
     	}
     	else if(request.equals("nein")) {
     		return "Möchtest du ein Kinder- oder Erwachsenenrätsel?";

@@ -68,7 +68,9 @@ public class AlexaSkillSpeechlet
         Intent intent = request.getIntent();
         
         //userRequests
+        if(intent.getName().equals("Spielbeginn"))
         spielregelnRequest = intent.getSlot("Spielregeln").getValue();
+        if(intent.getName().equals("RaetselartFrage"))
         rätselArtRequest = intent.getSlot("Raetselart").getValue();
         //String intentName = intent.getName();
         
@@ -85,7 +87,7 @@ public class AlexaSkillSpeechlet
         result=responseRaetselart(rätselArtRequest);
    
   
-        // use this method if you want to repond with a simple text
+        // use this method if you want to respond with a simple text
         return response(result);
 //        return responseWithFlavour("Erkannte Nomen: " + result, new Random().nextInt(5));
     }

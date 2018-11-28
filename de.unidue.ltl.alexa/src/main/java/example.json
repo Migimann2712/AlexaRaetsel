@@ -12,13 +12,6 @@
                             "samples": [
                                 "{Spielregeln}"
                             ]
-                        },
-                        {
-                            "name": "Raetselart",
-                            "type": "ErwachsenenKind_SLOT",
-                            "samples": [
-                                "{Raetselart}"
-                            ]
                         }
                     ],
                     "samples": [
@@ -28,6 +21,21 @@
                 {
                     "name": "AMAZON.HelpIntent",
                     "samples": []
+                },
+                {
+                    "name": "RaetselartFrage",
+                    "slots": [
+                        {
+                            "name": "Raetselart",
+                            "type": "ErwachsenenKind_SLOT",
+                            "samples": [
+                                "{Raetselart}"
+                            ]
+                        }
+                    ],
+                    "samples": [
+                        "{Raetselart}"
+                    ]
                 }
             ],
             "types": [
@@ -35,13 +43,11 @@
                     "name": "YES_NO_SLOT",
                     "values": [
                         {
-                            "id": "TRUE",
                             "name": {
                                 "value": "ja"
                             }
                         },
                         {
-                            "id": "FALSE",
                             "name": {
                                 "value": "nein"
                             }
@@ -53,12 +59,12 @@
                     "values": [
                         {
                             "name": {
-                                "value": "Kinderraetsel"
+                                "value": "Erwachsenenraetsel"
                             }
                         },
                         {
                             "name": {
-                                "value": "Erwachsenenraetsel"
+                                "value": "Kinderraetsel"
                             }
                         }
                     ]
@@ -79,15 +85,6 @@
                             "elicitationRequired": true,
                             "prompts": {
                                 "elicitation": "Elicit.Slot.659222329916.1185673323025"
-                            }
-                        },
-                        {
-                            "name": "Raetselart",
-                            "type": "ErwachsenenKind_SLOT",
-                            "confirmationRequired": false,
-                            "elicitationRequired": true,
-                            "prompts": {
-                                "elicitation": "Elicit.Slot.1004705007804.298766793861"
                             }
                         }
                     ]

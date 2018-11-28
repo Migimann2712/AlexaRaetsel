@@ -77,8 +77,12 @@ public class AlexaSkillSpeechlet
         String result="";
         
         System.out.println(spielregelnRequest);
-        System.out.println(intent.getName());
+        System.out.println(rätselArtRequest);
+        
+        if(spielregelnRequest!=null)
         result =responseSpielregeln(spielregelnRequest);
+        if(rätselArtRequest!=null)
+        result=responseRaetselart(rätselArtRequest);
    
   
         // use this method if you want to repond with a simple text
@@ -99,6 +103,17 @@ public class AlexaSkillSpeechlet
     	}
     	else if(request.equals("nein")) {
     		return "Möchtest du ein Kinder- oder Erwachsenenrätsel?";
+    	}
+    	else return "Error";
+    }
+    
+    private String responseRaetselart(String request) {
+    	if(request.equals("Kinderraetsel")) {
+    		return "Hier ist ein Kinderrätsel:";
+    	}
+    	else if (request.equals("Erwachsenenraetsel")) {
+    		return "Hier ist ein Erwachsenenrätsel:";
+    		
     	}
     	else return "Error";
     }

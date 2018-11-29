@@ -19,23 +19,25 @@
                     ]
                 },
                 {
-                    "name": "AMAZON.HelpIntent",
-                    "samples": []
-                },
-                {
                     "name": "RaetselartFrage",
                     "slots": [
                         {
                             "name": "Raetselart",
                             "type": "ErwachsenenKind_SLOT",
                             "samples": [
+                                "gib mir ein {Raetselart}",
                                 "{Raetselart}"
                             ]
                         }
                     ],
                     "samples": [
+                        "gib mir ein {Raetselart}",
                         "{Raetselart}"
                     ]
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
                 }
             ],
             "types": [
@@ -82,9 +84,23 @@
                             "name": "Spielregeln",
                             "type": "YES_NO_SLOT",
                             "confirmationRequired": false,
+                            "elicitationRequired": false,
+                            "prompts": {}
+                        }
+                    ]
+                },
+                {
+                    "name": "RaetselartFrage",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "Raetselart",
+                            "type": "ErwachsenenKind_SLOT",
+                            "confirmationRequired": false,
                             "elicitationRequired": true,
                             "prompts": {
-                                "elicitation": "Elicit.Slot.659222329916.1185673323025"
+                                "elicitation": "Elicit.Slot.921058948958.388437473640"
                             }
                         }
                     ]
@@ -102,7 +118,7 @@
                 ]
             },
             {
-                "id": "Elicit.Slot.1004705007804.298766793861",
+                "id": "Elicit.Slot.921058948958.388437473640",
                 "variations": [
                     {
                         "type": "PlainText",

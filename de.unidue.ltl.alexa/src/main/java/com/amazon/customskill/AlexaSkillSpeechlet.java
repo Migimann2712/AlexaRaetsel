@@ -64,15 +64,14 @@ public class AlexaSkillSpeechlet
     public SpeechletResponse onIntent(SpeechletRequestEnvelope<IntentRequest> requestEnvelope)
     {
         IntentRequest request = requestEnvelope.getRequest();
-
         Intent intent = request.getIntent();
         
         //userRequests
         if(intent.getName().equals("Spielbeginn"))
-        spielregelnRequest = intent.getSlot("Spielregeln").getValue();
+        	spielregelnRequest = intent.getSlot("Spielregeln").getValue();    
         if(intent.getName().equals("RaetselartFrage"))
-        rätselArtRequest = intent.getSlot("Raetselart").getValue();
-        //String intentName = intent.getName();
+        	rätselArtRequest = intent.getSlot("Raetselart").getValue();
+        
         
         logger.info("Received following text: [" + spielregelnRequest + "]");
         
@@ -81,12 +80,13 @@ public class AlexaSkillSpeechlet
         System.out.println(spielregelnRequest);
         System.out.println(rätselArtRequest);
         
-        if(spielregelnRequest!=null)
-        result =responseSpielregeln(spielregelnRequest);
-        if(rätselArtRequest!=null)
-        result=responseRaetselart(rätselArtRequest);
-   
-  
+        
+        if(rätselArtRequest==null)
+        	result=responseSpielregeln(spielregelnRequest);
+        else
+        	result=responseRaetselart(rätselArtRequest);
+
+
         // use this method if you want to respond with a simple text
         return response(result);
 //        return responseWithFlavour("Erkannte Nomen: " + result, new Random().nextInt(5));
@@ -98,26 +98,33 @@ public class AlexaSkillSpeechlet
      * @param i
      * @return
      */
-    //kommentar
+    
     private String responseSpielregeln(String request) {
-    	if(request.equals("Ja")) {
-    		return "Okay. Ich nenn dir ein Rätsel. Wenn du einen Tipp benötigst sag: Alexa, ich brauche einen Tipp! Wenn du die Antwort nicht weißt kann ich dir auch die Lösung verraten. Möchtest du ein Kinder- oder Erwachsenenrätsel?";
+    	   	
+    	if(request.equals("Ja")) {  		
+    		return "Okay. Ich nenn dir ein Rätsel. "
+    				+ "Wenn du einen Tipp benötigst sag: Alexa, ich brauche einen Tipp! "
+    				+ "Wenn du die Antwort nicht weißt kann ich dir auch die Lösung verraten. "
+    				+ "Möchtest du ein Kinder- oder Erwachsenenrätsel?";
+    		
     	}
     	else if(request.equals("nein")) {
     		return "Möchtest du ein Kinder- oder Erwachsenenrätsel?";
     	}
-    	else return "Error";
+    	else return "";
+
     }
     
     private String responseRaetselart(String request) {
-    	if(request.equals("Kinderraetsel")) {
+    	if(request.equals("kinderraetsel")) {
     		return "Hier ist ein Kinderrätsel:";
     	}
-    	else if (request.equals("Erwachsenenraetsel")) {
+    	else if (request.equals("erwachsenenraetsel")) {
     		return "Hier ist ein Erwachsenenrätsel:";
     		
     	}
-    	else return "Error";
+    	else return "";
+
     }
     
     private SpeechletResponse responseWithFlavour(String text, int i) {

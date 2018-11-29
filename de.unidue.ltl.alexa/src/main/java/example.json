@@ -4,35 +4,15 @@
             "invocationName": "rätsel master",
             "intents": [
                 {
-                    "name": "Spielbeginn",
+                    "name": "PPIntent",
                     "slots": [
                         {
-                            "name": "Spielregeln",
-                            "type": "YES_NO_SLOT",
-                            "samples": [
-                                "{Spielregeln}"
-                            ]
+                            "name": "Alles",
+                            "type": "ALLES"
                         }
                     ],
                     "samples": [
-                        "{Spielregeln}"
-                    ]
-                },
-                {
-                    "name": "RaetselartFrage",
-                    "slots": [
-                        {
-                            "name": "Raetselart",
-                            "type": "ErwachsenenKind_SLOT",
-                            "samples": [
-                                "gib mir ein {Raetselart}",
-                                "{Raetselart}"
-                            ]
-                        }
-                    ],
-                    "samples": [
-                        "gib mir ein {Raetselart}",
-                        "{Raetselart}"
+                        "{Alles}"
                     ]
                 },
                 {
@@ -42,90 +22,21 @@
             ],
             "types": [
                 {
-                    "name": "YES_NO_SLOT",
+                    "name": "ALLES",
                     "values": [
                         {
                             "name": {
-                                "value": "ja"
+                                "value": "hoodwink ersichtlich kasino ländereien fraktur größten luftschiff puffer"
                             }
                         },
                         {
                             "name": {
-                                "value": "nein"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "ErwachsenenKind_SLOT",
-                    "values": [
-                        {
-                            "name": {
-                                "value": "Erwachsenenraetsel"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "Kinderraetsel"
+                                "value": "furchtlos höllenfeuer schuld konzert tausch schmutzig ziellos zyanid"
                             }
                         }
                     ]
                 }
             ]
-        },
-        "dialog": {
-            "intents": [
-                {
-                    "name": "Spielbeginn",
-                    "confirmationRequired": false,
-                    "prompts": {},
-                    "slots": [
-                        {
-                            "name": "Spielregeln",
-                            "type": "YES_NO_SLOT",
-                            "confirmationRequired": false,
-                            "elicitationRequired": false,
-                            "prompts": {}
-                        }
-                    ]
-                },
-                {
-                    "name": "RaetselartFrage",
-                    "confirmationRequired": false,
-                    "prompts": {},
-                    "slots": [
-                        {
-                            "name": "Raetselart",
-                            "type": "ErwachsenenKind_SLOT",
-                            "confirmationRequired": false,
-                            "elicitationRequired": true,
-                            "prompts": {
-                                "elicitation": "Elicit.Slot.921058948958.388437473640"
-                            }
-                        }
-                    ]
-                }
-            ]
-        },
-        "prompts": [
-            {
-                "id": "Elicit.Slot.659222329916.1185673323025",
-                "variations": [
-                    {
-                        "type": "PlainText",
-                        "value": "Soll ich dir die Spielregel erklären?"
-                    }
-                ]
-            },
-            {
-                "id": "Elicit.Slot.921058948958.388437473640",
-                "variations": [
-                    {
-                        "type": "PlainText",
-                        "value": "Möchtest du ein Kinder- oder Erwachsenenrätsel?"
-                    }
-                ]
-            }
-        ]
+        }
     }
 }

@@ -1,10 +1,7 @@
 /**
     Copyright 2014-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-
     Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
-
         http://aws.amazon.com/apache2.0/
-
     or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 package com.amazon.customskill;
@@ -40,8 +37,10 @@ import nlp.dkpro.backend.NlpSingleton;
 public class AlexaSkillSpeechlet
     implements SpeechletV2
 {
-    public static String spielregelnRequest;
-    public static String r‰tselArtRequest;
+    public static String userRequest;
+    
+    //gibt letzte Antwort von Alexa an
+    String alexaResponse="welcome message";
 
     static Logger logger = LoggerFactory.getLogger(AlexaSkillSpeechlet.class);
 
@@ -64,31 +63,32 @@ public class AlexaSkillSpeechlet
     public SpeechletResponse onIntent(SpeechletRequestEnvelope<IntentRequest> requestEnvelope)
     {
         IntentRequest request = requestEnvelope.getRequest();
+
         Intent intent = request.getIntent();
-        
-        //userRequests
-        if(intent.getName().equals("Spielbeginn"))
-        	spielregelnRequest = intent.getSlot("Spielregeln").getValue();    
-        if(intent.getName().equals("RaetselartFrage"))
-        	r‰tselArtRequest = intent.getSlot("Raetselart").getValue();
-        
-        
-        logger.info("Received following text: [" + spielregelnRequest + "]");
-        
+
         String result="";
         
-        System.out.println(spielregelnRequest);
-        System.out.println(r‰tselArtRequest);
+        userRequest = intent.getSlot("Alles").getValue();
         
+        System.out.println("UserRequest: " + userRequest);
+        System.out.println("AlexaResponse: " + alexaResponse);
         
-        if(r‰tselArtRequest==null)
-        	result=responseSpielregeln(spielregelnRequest);
-        else
-        	result=responseRaetselart(r‰tselArtRequest);
+        logger.info("Received following text: [" + userRequest + "]");
 
-
-        // use this method if you want to respond with a simple text
+        //nach der wellcome message fragt Alexa nach den Spielregeln
+        if(alexaResponse.equals("welcome message")) {
+        	return askUserResponse(responseSpielregeln(userRequest));
+        }
+        
+        //nach den Spielregeln fragt Alexa nach der R√§tselart
+        else if(alexaResponse.equals("Spielregeln")) {
+        	return askUserResponse(responseRaetselart(userRequest));
+        }
+                
         return response(result);
+             
+        // use this method if you want to repond with a simple text
+       // return response("Erkannte Nomen: " + result);
 //        return responseWithFlavour("Erkannte Nomen: " + result, new Random().nextInt(5));
     }
 
@@ -100,32 +100,35 @@ public class AlexaSkillSpeechlet
      */
     
     private String responseSpielregeln(String request) {
-    	   	
-    	if(request.equals("Ja")) {  		
-    		return "Okay. Ich nenn dir ein R‰tsel. "
-    				+ "Wenn du einen Tipp benˆtigst sag: Alexa, ich brauche einen Tipp! "
-    				+ "Wenn du die Antwort nicht weiﬂt kann ich dir auch die Lˆsung verraten. "
-    				+ "Mˆchtest du ein Kinder- oder Erwachsenenr‰tsel?";
-    		
+    	String result="";
+    	if(request.equals("Ja")) { 
+    		alexaResponse="Spielregeln";
+    		result= "Okay. Ich nenn dir ein R√§tsel. "
+    				+ "Wenn du einen Tipp ben√∂tigst sag: Alexa, ich brauche einen Tipp! "
+    				+ "Wenn du die Antwort nicht wei√üt kann ich dir auch die L√∂sung verraten. "
+    				+ "M√∂chtest du ein Kinder- oder Erwachsenenr√§tsel?";   		
     	}
     	else if(request.equals("nein")) {
-    		return "Mˆchtest du ein Kinder- oder Erwachsenenr‰tsel?";
+    		alexaResponse="Spielregeln";
+    		result= "M√∂chtest du ein Kinder- oder Erwachsenenr√§tsel?";
     	}
-    	else return "";
-
+    	return result;
     }
     
     private String responseRaetselart(String request) {
-    	if(request.equals("kinderraetsel")) {
-    		return "Hier ist ein Kinderr‰tsel:";
+    	String result="";
+    	if(request.contains("kinderr√§tsel")) {
+    		alexaResponse="R√§tselart";
+    		result= "Hier ist ein Kinderr√§tsel:";
     	}
-    	else if (request.equals("erwachsenenraetsel")) {
-    		return "Hier ist ein Erwachsenenr‰tsel:";
-    		
+    	else if (request.contains("erwachsenenr√§tsel")) {
+    		alexaResponse="R√§tselart";
+    		result= "Hier ist ein Erwachsenenr√§tsel:";   		
     	}
-    	else return "";
-
+    	return result;
     }
+
+    
     
     private SpeechletResponse responseWithFlavour(String text, int i) {
        
@@ -161,7 +164,7 @@ public class AlexaSkillSpeechlet
     {
         List<String> nouns = new ArrayList<>();
         try {
-            nouns = p.findNouns(spielregelnRequest);
+            nouns = p.findNouns(userRequest);
             logger.info("Detected following nouns: [" + StringUtils.join(nouns, " ") + "]");
         }
         catch (Exception e) {
@@ -185,7 +188,7 @@ public class AlexaSkillSpeechlet
      * The first question presented to the skill user (entry point)
      */
     private SpeechletResponse getWelcomeResponse(){
-        return askUserResponse("Willkommen bei r‰tsel master. Soll ich dir die Spielregeln erkl‰ren");
+        return askUserResponse("Willkommen bei R√§tsel Master. Soll ich dir die Spielregeln erkl√§ren?");
     }
 
     /**

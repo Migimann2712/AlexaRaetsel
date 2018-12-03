@@ -1,9 +1,3 @@
-/**
-    Copyright 2014-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-    Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
-        http://aws.amazon.com/apache2.0/
-    or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
- */
 package com.amazon.customskill;
 
 import java.util.ArrayList;
@@ -31,19 +25,29 @@ import com.amazon.speech.ui.SsmlOutputSpeech;
 import nlp.dkpro.backend.PosTagger;
 import nlp.dkpro.backend.NlpSingleton;
 
-/*
- * This class is the actual skill. Here you receive the input and have to produce the speech output. 
- */
-public class AlexaSkillSpeechlet
-    implements SpeechletV2
-{
+
+public class AlexaSkillSpeechlet implements SpeechletV2 {
+	
     public static String userRequest;
     
-    //gibt letzte Antwort von Alexa an
+    // Rätsel, Tipps und Lösungen als Arrays (mit Indizes aufrufbar)
+    // Erwachsenen-Teil
+    public static String eRaetsel[] = {"Alle Tage geh ich raus, bleibe dennoch stets zuhaus. Wer bin ich?","Was hängt an der Wand und hält ohne Nagel und Band?"};
+    public static String eTipps[] = {"Es ist ein Lebewesen."};
+    public static String eLoesung[] = {"schnecke","spinnennetz"};
+    
+    // Kinder-Teil
+    public static String kRaetsel[] = {"Was hat keine Füße und läuft trotzdem?","Fliegt, aber hat keine Flügel. Weint, aber hat keine Augen. Was ist es?"};
+    public static String kTipps[] =	{"Es ist etwas am Menschen."};
+    public static String kLoesung[] = {"nase","wolke"};
+    
+    // Index
+    public static int index = 0;
+    
+    // Gibt letzte Antwort von Alexa an
     String alexaResponse="welcome message";
 
     static Logger logger = LoggerFactory.getLogger(AlexaSkillSpeechlet.class);
-
     private PosTagger p;
 
     @Override
@@ -63,10 +67,9 @@ public class AlexaSkillSpeechlet
     public SpeechletResponse onIntent(SpeechletRequestEnvelope<IntentRequest> requestEnvelope)
     {
         IntentRequest request = requestEnvelope.getRequest();
-
         Intent intent = request.getIntent();
 
-        String result="";
+        String result = "";
         
         userRequest = intent.getSlot("Alles").getValue();
         
@@ -75,61 +78,87 @@ public class AlexaSkillSpeechlet
         
         logger.info("Received following text: [" + userRequest + "]");
 
-        //nach der wellcome message fragt Alexa nach den Spielregeln
+        // Nach der Welcome Message fragt Alexa nach den Spielregeln
         if(alexaResponse.equals("welcome message")) {
         	return askUserResponse(responseSpielregeln(userRequest));
         }
         
-        //nach den Spielregeln fragt Alexa nach der Rätselart
+        // Nach den Spielregeln fragt Alexa nach der Rätselart
         else if(alexaResponse.equals("Spielregeln")) {
         	return askUserResponse(responseRaetselart(userRequest));
         }
+        
+        // Wird ausgeführt, wenn man ein Kinderrätsel als Rätselart gewählt hat
+        else if(alexaResponse.equals("Kinderrätsel")) {
+        	return askUserResponse(responseKinderRaetsel(userRequest));
+        }
+        
+        // Wird ausgeführt, wenn man ein Erwachsenenrätsel als Rätselart gewählt hat
+        else if(alexaResponse.equals("Erwachsenenrätsel")) {
+        	return askUserResponse(responseErwachsenenRaetsel(userRequest));
+        }
                 
         return response(result);
-             
-        // use this method if you want to repond with a simple text
-       // return response("Erkannte Nomen: " + result);
-//        return responseWithFlavour("Erkannte Nomen: " + result, new Random().nextInt(5));
     }
-
-    /**
-     * formats the text in weird ways
-     * @param text
-     * @param i
-     * @return
-     */
-    
+   
     private String responseSpielregeln(String request) {
-    	String result="";
+    	String result = "";
     	if(request.equals("Ja")) { 
-    		alexaResponse="Spielregeln";
-    		result= "Okay. Ich nenn dir ein Rätsel. "
-    				+ "Wenn du einen Tipp benötigst sag: Alexa, ich brauche einen Tipp! "
+    		alexaResponse = "Spielregeln";
+    		result = "Okay. Ich nenn dir ein Rätsel. "
+    				+ "Wenn du einen Tipp benötigst, sag: Tipp! "
     				+ "Wenn du die Antwort nicht weißt kann ich dir auch die Lösung verraten. "
     				+ "Möchtest du ein Kinder- oder Erwachsenenrätsel?";   		
     	}
     	else if(request.equals("nein")) {
     		alexaResponse="Spielregeln";
-    		result= "Möchtest du ein Kinder- oder Erwachsenenrätsel?";
+    		result = "Möchtest du ein Kinder- oder Erwachsenenrätsel?";
     	}
     	return result;
     }
     
     private String responseRaetselart(String request) {
-    	String result="";
+    	String result = "";
     	if(request.contains("kinderrätsel")) {
-    		alexaResponse="Rätselart";
-    		result= "Hier ist ein Kinderrätsel:";
+    		alexaResponse="Kinderrätsel";
+    		result = "Hier ist ein Kinderrätsel: "
+    				+ kRaetsel[index];						// Kinderrätsel mit dem Index index (damit z.B. index+1 machbar)
     	}
     	else if (request.contains("erwachsenenrätsel")) {
-    		alexaResponse="Rätselart";
-    		result= "Hier ist ein Erwachsenenrätsel:";   		
+    		alexaResponse="Erwachsenenrätsel";
+    		result = "Hier ist ein Erwachsenenrätsel: "
+    				+ eRaetsel[index];   					// Erwachsenenrätsel mit dem Index index
+    	}
+    	return result;
+    }
+    
+    private String responseErwachsenenRaetsel(String request) {
+    	String result = "";
+    	if(request.equals(eLoesung[index])) {				// Falls Lösung genannt wird
+    		alexaResponse = "Antwort";
+    		result = "korrekt";
+    	}
+    	else if(request.equals("tipp")) {					// Falls man nach einem Tipp fragt
+    		alexaResponse = "Tipp";
+    		result = eTipps[index];
+    	}
+    	return result;
+    }
+   
+    private String responseKinderRaetsel(String request) {
+    	String result = "";
+    	if(request.equals(kLoesung[index])) {				// Falls Lösung genannt wird
+    		alexaResponse = "Antwort";
+    		return result = "Das ist richtig!";
+    	}
+    	else if(request.equals("tipp")) {					// Falls man nach einem Tipp fragt
+    		alexaResponse = "Tipp";
+    		result = kTipps[index];
     	}
     	return result;
     }
 
-    
-    
+        
     private SpeechletResponse responseWithFlavour(String text, int i) {
        
     	SsmlOutputSpeech speech = new SsmlOutputSpeech();

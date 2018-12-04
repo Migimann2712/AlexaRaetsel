@@ -89,13 +89,28 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         }
         
         // Wird ausgeführt, wenn man ein Kinderrätsel als Rätselart gewählt hat
-        else if(alexaResponse.equals("Kinderrätsel")) {
+        else if(alexaResponse.equals("Kinderrätsel") || alexaResponse.equals("Kinderrätsel_Tipp")) {
         	return askUserResponse(responseKinderRaetsel(userRequest));
         }
         
         // Wird ausgeführt, wenn man ein Erwachsenenrätsel als Rätselart gewählt hat
-        else if(alexaResponse.equals("Erwachsenenrätsel")) {
+        else if(alexaResponse.equals("Erwachsenenrätsel") || alexaResponse.equals("Erwachsenenrätsel_Tipp")) {
         	return askUserResponse(responseErwachsenenRaetsel(userRequest));
+        }
+        
+        else if(alexaResponse.equals("Antwort_Erwachsenenrätsel")) {
+        	if(userRequest.equals("Ja")) {
+        		return askUserResponse(responseRaetselart("erwachsenenrätsel"));
+        	}
+        	else return response("Es war schön mit dir gerätselt zu haben");
+        	
+        }
+        
+        else if(alexaResponse.equals("Antwort_Kinderrätsel")) {
+        	if(userRequest.equals("Ja")) {
+        		return askUserResponse(responseRaetselart("kinderrätsel"));
+        	}
+        	else return response("Es war schön mit dir gerätselt zu haben");
         }
                 
         return response(result);
@@ -134,12 +149,13 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     
     private String responseErwachsenenRaetsel(String request) {
     	String result = "";
-    	if(request.equals(eLoesung[index])) {				// Falls Lösung genannt wird
-    		alexaResponse = "Antwort";
-    		result = "korrekt";
+    	if(request.contains(eLoesung[index])) {				// Falls Lösung genannt wird
+    		alexaResponse = "Antwort_Erwachsenenrätsel";
+    		result = "korrekt. Möchtest du ein weiteres Rätsel?";
+    		index++;
     	}
-    	else if(request.equals("tipp")) {					// Falls man nach einem Tipp fragt
-    		alexaResponse = "Tipp";
+    	else if(request.contains("tipp")) {					// Falls man nach einem Tipp fragt
+    		alexaResponse = "Erwachsenenrätsel_Tipp";
     		result = eTipps[index];
     	}
     	return result;
@@ -147,12 +163,13 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
    
     private String responseKinderRaetsel(String request) {
     	String result = "";
-    	if(request.equals(kLoesung[index])) {				// Falls Lösung genannt wird
-    		alexaResponse = "Antwort";
-    		return result = "Das ist richtig!";
+    	if(request.contains(kLoesung[index])) {				// Falls Lösung genannt wird
+    		alexaResponse = "Antwort_Kinderrätsel";
+    		result = "Das ist richtig! Möchtest du ein weiteres Rätsel?";
+    		index++;
     	}
-    	else if(request.equals("tipp")) {					// Falls man nach einem Tipp fragt
-    		alexaResponse = "Tipp";
+    	else if(request.contains("tipp")) {					// Falls man nach einem Tipp fragt
+    		alexaResponse = "Kinderrätsel_Tipp";
     		result = kTipps[index];
     	}
     	return result;

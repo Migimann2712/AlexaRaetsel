@@ -32,14 +32,14 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     
     // Rätsel, Tipps und Lösungen als Arrays (mit Indizes aufrufbar)
     // Erwachsenen-Teil
-    public static String eRaetsel[] = {"Alle Tage geh ich raus, bleibe dennoch stets zuhaus. Wer bin ich?","Was hängt an der Wand und hält ohne Nagel und Band?"};
-    public static String eTipps[] = {"Es ist ein Lebewesen."};
-    public static String eLoesung[] = {"schnecke","spinnennetz"};
+    public static String eRaetsel[] = {"Alle Tage geh ich raus, bleibe dennoch stets zuhaus. Wer bin ich?","Was hängt an der Wand und hält ohne Nagel und Band?", "Der es macht, der will es nicht. Der es trägt, behält es nicht. Der es kauft, braucht es nicht. Der es hat, weiß es nicht.", "Ein Bauer zählt bei seinen Hühnern und Schafen 40 Augen und 64 Beine. Wie viele Schafe gibt es auf dem Bauernhof?", "Was kommt einmal in jeder Minute, zweimal in jedem Moment aber nie in tausend Jahren vor?", "Höher ist`s als jeder Baum. Wurzeln hat`s, die sieht man kaum. Auch im Licht wächst es nicht. Was bin ich?"};
+    public static String eTipps[] = {"Es ist ein Lebewesen.", "Ein Tier macht es.", "Es hat etwas mit dem Ableben zu tun.", "Wie viele Beine hat ein Schaf und wie viele ein Huhn?", "Die Antwort liegt in der Frage.", "Es kommt in der Natur vor."};
+    public static String eLoesung[] = {"schnecke","spinnennetz", "sarg", "zwölf", "buchstabe m", "berg"};
     
     // Kinder-Teil
-    public static String kRaetsel[] = {"Was hat keine Füße und läuft trotzdem?","Fliegt, aber hat keine Flügel. Weint, aber hat keine Augen. Was ist es?"};
-    public static String kTipps[] =	{"Es ist etwas am Menschen."};
-    public static String kLoesung[] = {"nase","wolke"};
+    public static String kRaetsel[] = {"Was hat keine Füße und läuft trotzdem?","Fliegt, aber hat keine Flügel. Weint, aber hat keine Augen. Was ist es?", "Harte Schale, leckerer Kern, wer mich knackt, der isst mich gern?", "Im Winter steht er still und stumm dort draußen weiß herum. Wer ist es?", "Was grünt im Sommer und im Winter und erfreut zur Weihnachtszeit die Kinder?", "Welche Brille trägt man nicht auf der Nase?"};
+    public static String kTipps[] =	{"Es ist etwas am Menschen.", "Es gibt viele davon.", "Es ist klein.", "In der Sonne fängt er an zu schmelzen.", "Zur Weihnachtszeit holt man es ins Haus.", "Man setzt sich drauf."};
+    public static String kLoesung[] = {"nase","wolke", "nuss", "schneemann", "tannenbaum", "klobrille"};
     
     // Index
     public static int index = 0;
@@ -78,8 +78,12 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         
         logger.info("Received following text: [" + userRequest + "]");
 
+        if(userRequest.contains("schluss")) {
+        	alexaResponse="welcome message";
+        	return response("War schön mit dir gerätselt zu haben");
+        }
         // Nach der Welcome Message fragt Alexa nach den Spielregeln
-        if(alexaResponse.equals("welcome message")) {
+        else if(alexaResponse.equals("welcome message")) {
         	return askUserResponse(responseSpielregeln(userRequest));
         }
         
@@ -89,7 +93,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         }
         
         // Wird ausgeführt, wenn man ein Kinderrätsel als Rätselart gewählt hat
-        else if(alexaResponse.equals("Kinderrätsel") || alexaResponse.equals("Kinderrätsel_Tipp")) {
+        else if(alexaResponse.equals("Kinderrätsel") || alexaResponse.equals("Kinderrätsel_Tipp") ) {
         	return askUserResponse(responseKinderRaetsel(userRequest));
         }
         
@@ -102,7 +106,10 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         	if(userRequest.equals("Ja")) {
         		return askUserResponse(responseRaetselart("erwachsenenrätsel"));
         	}
-        	else return response("Es war schön mit dir gerätselt zu haben");
+        	else if(userRequest.equals("nein")) {
+        		alexaResponse="welcome message";
+        		return response("Es war schön mit dir gerätselt zu haben");
+        	}
         	
         }
         
@@ -110,7 +117,10 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         	if(userRequest.equals("Ja")) {
         		return askUserResponse(responseRaetselart("kinderrätsel"));
         	}
-        	else return response("Es war schön mit dir gerätselt zu haben");
+        	else if(userRequest.equals("nein")) {
+        		alexaResponse="welcome message";
+        		return response("Es war schön mit dir gerätselt zu haben");
+        	}
         }
                 
         return response(result);
@@ -122,6 +132,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     		alexaResponse = "Spielregeln";
     		result = "Okay. Ich nenn dir ein Rätsel. "
     				+ "Wenn du einen Tipp benötigst, sag: Tipp! "
+    				+ "Wenn ich das Rätsel wiederholen soll, sage: Wiederhole"
     				+ "Wenn du die Antwort nicht weißt kann ich dir auch die Lösung verraten. "
     				+ "Möchtest du ein Kinder- oder Erwachsenenrätsel?";   		
     	}
@@ -149,28 +160,75 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     
     private String responseErwachsenenRaetsel(String request) {
     	String result = "";
-    	if(request.contains(eLoesung[index])) {				// Falls Lösung genannt wird
+    	
+    	if(request.contains("wiederhole")) {
+    		result=eRaetsel[index];
+    	}
+    	else if(request.contains("lösung")) {
     		alexaResponse = "Antwort_Erwachsenenrätsel";
-    		result = "korrekt. Möchtest du ein weiteres Rätsel?";
+    		result="Die Lösung ist " + eLoesung[index] + ". Möchtest du ein weiteres Rätsel?";
     		index++;
+    	}
+    	else if(request.contains("überspringe")) {
+    		result="Hier ist das nächste Rätsel: " + eRaetsel[index++];
+    	}
+    	else if(request.contains(eLoesung[index])) {				// Falls Lösung genannt wird
+    		alexaResponse = "Antwort_Erwachsenenrätsel";
+    		if(index==eRaetsel.length-1) {
+    			result="Korrekt. War schön mit dir gerätselt zu haben";
+    			alexaResponse="welcome message";
+    			index=0;
+    		}
+    		else {
+    			result = "Korrekt. Möchtest du ein weiteres Rätsel?";
+    			index++;
+    		}
+    		
     	}
     	else if(request.contains("tipp")) {					// Falls man nach einem Tipp fragt
     		alexaResponse = "Erwachsenenrätsel_Tipp";
     		result = eTipps[index];
+    	}
+    	
+    	else {
+    		result="Das war leider nicht richtig.";
     	}
     	return result;
     }
    
     private String responseKinderRaetsel(String request) {
     	String result = "";
-    	if(request.contains(kLoesung[index])) {				// Falls Lösung genannt wird
+    	
+    	
+    	if(request.contains("wiederhole")) {
+    		result=kRaetsel[index];
+    	}
+    	else if(request.contains("lösung")) {
     		alexaResponse = "Antwort_Kinderrätsel";
-    		result = "Das ist richtig! Möchtest du ein weiteres Rätsel?";
+    		result="Die Lösung ist " + kLoesung[index] + ". Möchtest du ein weiteres Rätsel?";
     		index++;
+    	}
+    	else if(request.contains("überspringe")) {
+    		result="Hier ist das nächste Rätsel: " + kRaetsel[index++];
+    	}
+    	else if(request.contains(kLoesung[index])) {				// Falls Lösung genannt wird
+    		alexaResponse = "Antwort_Kinderrätsel";
+    		if(index==eRaetsel.length-1) {
+    			result="Das ist richtig. War schön mit dir gerätselt zu haben";
+    			alexaResponse="welcome message";
+    			index=0;
+    		}
+    		else {
+    			result = "Das ist richtig. Möchtest du ein weiteres Rätsel?";
+    			index++;
+    		}
     	}
     	else if(request.contains("tipp")) {					// Falls man nach einem Tipp fragt
     		alexaResponse = "Kinderrätsel_Tipp";
     		result = kTipps[index];
+    	}
+    	else {
+    		result="Das war leider nicht richtig.";
     	}
     	return result;
     }
@@ -234,6 +292,8 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
      * The first question presented to the skill user (entry point)
      */
     private SpeechletResponse getWelcomeResponse(){
+    	
+        
         return askUserResponse("Willkommen bei Rätsel Master. Soll ich dir die Spielregeln erklären?");
     }
 

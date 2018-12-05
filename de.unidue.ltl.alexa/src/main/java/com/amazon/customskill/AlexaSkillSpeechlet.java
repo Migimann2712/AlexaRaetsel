@@ -104,7 +104,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         
         else if(alexaResponse.equals("Antwort_Erwachsenenrätsel")) {
         	if(userRequest.equals("Ja")) {
-        		return askUserResponse(responseRaetselart("erwachsenenrätsel"));
+        		return askUserResponse(responseRaetselart("erwachsenen rätsel"));
         	}
         	else if(userRequest.equals("nein")) {
         		alexaResponse="welcome message";
@@ -115,7 +115,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         
         else if(alexaResponse.equals("Antwort_Kinderrätsel")) {
         	if(userRequest.equals("Ja")) {
-        		return askUserResponse(responseRaetselart("kinderrätsel"));
+        		return askUserResponse(responseRaetselart("kinder rätsel"));
         	}
         	else if(userRequest.equals("nein")) {
         		alexaResponse="welcome message";
@@ -145,15 +145,18 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     
     private String responseRaetselart(String request) {
     	String result = "";
-    	if(request.contains("kinderrätsel")) {
+    	if(request.contains("kinder rätsel")) {
     		alexaResponse="Kinderrätsel";
     		result = "Hier ist ein Kinderrätsel: "
     				+ kRaetsel[index];						// Kinderrätsel mit dem Index index (damit z.B. index+1 machbar)
     	}
-    	else if (request.contains("erwachsenenrätsel")) {
+    	else if (request.contains("erwachsenen rätsel")) {
     		alexaResponse="Erwachsenenrätsel";
     		result = "Hier ist ein Erwachsenenrätsel: "
     				+ eRaetsel[index];   					// Erwachsenenrätsel mit dem Index index
+    	}
+    	else {
+    		result = "Das habe ich leider nicht verstanden. Möchtest du ein Kinder- oder Erwachsenenrätsel?";
     	}
     	return result;
     }
@@ -170,7 +173,8 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     		index++;
     	}
     	else if(request.contains("überspringe")) {
-    		result="Hier ist das nächste Rätsel: " + eRaetsel[index++];
+    		index++;
+    		result="Hier ist das nächste Rätsel: " + eRaetsel[index];
     	}
     	else if(request.contains(eLoesung[index])) {				// Falls Lösung genannt wird
     		alexaResponse = "Antwort_Erwachsenenrätsel";
@@ -191,7 +195,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	}
     	
     	else {
-    		result="Das war leider nicht richtig.";
+    		result="Das war leider nicht richtig. Versuch es noch einmal.";
     	}
     	return result;
     }
@@ -209,7 +213,8 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     		index++;
     	}
     	else if(request.contains("überspringe")) {
-    		result="Hier ist das nächste Rätsel: " + kRaetsel[index++];
+    		index++;
+    		result="Hier ist das nächste Rätsel: " + kRaetsel[index];
     	}
     	else if(request.contains(kLoesung[index])) {				// Falls Lösung genannt wird
     		alexaResponse = "Antwort_Kinderrätsel";
@@ -228,7 +233,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     		result = kTipps[index];
     	}
     	else {
-    		result="Das war leider nicht richtig.";
+    		result="Das war leider nicht richtig. Versuch es noch einmal.";
     	}
     	return result;
     }

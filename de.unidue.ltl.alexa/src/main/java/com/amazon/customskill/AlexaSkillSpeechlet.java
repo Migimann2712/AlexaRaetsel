@@ -175,6 +175,9 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     		alexaResponse = "Spielregeln";
     		result = "Alles klar, du Allwissender. Möchtest du ein Kinder- oder Erwachsenenrätsel?";
     	}
+    	else 
+    		result = "Das habe ich leider nicht verstanden. Soll ich dir die Spielregeln erklären?";
+    	
     	return result;
     }
     

@@ -166,8 +166,8 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	String result = "";
     	if(request.contains("Ja")) { 
     		alexaResponse = "Spielregeln";
-    		result = "Okay. Wenn du einen Tipp willst, sag einfach: Tipp! "
-    				+ "Zum Wiederholen des Rätsels, sag: Wiederhole! "
+    		result = "Okay. Wenn du einen Tipp willst, sag einfach 'Tipp'! "
+    				+ "Du kannst Rätsel überspringen oder wiederholen! "
     				+ "Mit 'Lösung' sag ich dir die Lösung des Rätsels und falls wir unser Spiel beenden sollen, sag einfach: Schluss. "
     				+ "Das wärs dann auch schon. Möchtest du ein Kinder- oder Erwachsenenrätsel?";   		
     	}

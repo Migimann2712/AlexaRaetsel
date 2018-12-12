@@ -95,7 +95,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         System.out.println("AlexaResponse: " + alexaResponse);
         
         logger.info("Received following text: [" + userRequest + "]");
-
+        
         // Falls man nicht mehr spielen möchte
         if(userRequest.contains("schluss")) {
         	alexaResponse = "welcome message";
@@ -122,12 +122,18 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         
         // Nachdem man Kinderrätsel gewählt oder Tipp bekommen hat
         else if(alexaResponse.equals("Kinderrätsel") || alexaResponse.equals("Kinderrätsel_Tipp") ) {
-        	return askUserResponse(responseKinderRaetsel(userRequest));
+        	if(index == kRaetsel.length-1 && (userRequest.contains(kLoesung[index]) || userRequest.contains("lösung")))
+            	return response(responseKinderRaetsel(userRequest));
+        	else
+        		return askUserResponse(responseKinderRaetsel(userRequest));
         }
         
         // Nachdem man Erwachsenenrätsel gewählt oder Tipp bekommen hat
         else if(alexaResponse.equals("Erwachsenenrätsel") || alexaResponse.equals("Erwachsenenrätsel_Tipp")) {
-        	return askUserResponse(responseErwachsenenRaetsel(userRequest));
+        	if(index == eRaetsel.length-1 && (userRequest.contains(eLoesung[index]) || userRequest.contains("lösung")))
+            	return response(responseErwachsenenRaetsel(userRequest));
+        	else
+        		return askUserResponse(responseErwachsenenRaetsel(userRequest));
         }
         
         // Erwachsenenrätsel weiterspielen oder nicht

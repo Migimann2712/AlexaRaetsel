@@ -374,6 +374,8 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     public void onSessionEnded(SpeechletRequestEnvelope<SessionEndedRequest> requestEnvelope)
     {
         logger.info("Alexa session ends now");
+		alexaResponse = "welcome message";
+        index = 0;
     }
 
     /*

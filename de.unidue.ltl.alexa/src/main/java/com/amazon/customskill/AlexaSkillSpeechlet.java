@@ -346,18 +346,12 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     //Rufe Rätsel aus der Datenbank auf
     private String[] getRaetsel(String rätselart, int index) {
     	String[] rätsel = new String[4];
-//    	int id;
-//    	String rätsel = "";
-//    	String lösung = "";
-//    	String tipp1 = "";
-//    	String tipp2 = "";
     	
     	try{
     		PreparedStatement pstmt = con.prepareStatement("SELECT * FROM " + rätselart + " WHERE id=?");		
     		pstmt.setString(1, Integer.toString(index));
     		ResultSet rs= pstmt.executeQuery();
     		while(rs.next()) {
-    			//id = rs.getInt(1);
     			rätsel[0] = rs.getString(2);
     			rätsel[1] = rs.getString(3);
     			rätsel[2] = rs.getString(4);
@@ -369,13 +363,6 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     		e.printStackTrace();
     	}
     	return rätsel;
-//    	if(resultArt.equals("rätsel"))
-//    		return rätsel;
-//    	else if (resultArt.equals("lösung"))
-//    		return lösung;
-//    	else if(resultArt.equals("tipp1"))
-//    		return tipp1;
-//    	else return tipp2;
     }
         
     private SpeechletResponse responseWithFlavour(String text, int i) {

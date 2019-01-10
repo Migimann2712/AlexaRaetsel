@@ -41,8 +41,8 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     // Index zum Aufrufen
     ArrayList<Integer> rätselFertig=new ArrayList<Integer>();
     
-    int zufallszahlK=(int) (Math.random()*(lastKinderrätsel+1));
-    int zufallszahlE=(int) (Math.random()*(lastErwachsenenrätsel+1));
+    int zufallszahlK;
+    int zufallszahlE;
     int fertigeRätsel=0;
     
     // Gibt letzte Antwort von Alexa an
@@ -90,7 +90,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         	alexaResponse = "welcome message";
         	rätselFertig.clear();
         	// Falls man weniger als 2 Rätsel geschafft hat (zum Spaß)
-        	if(fertigeRätsel < 2) {
+        	if(fertigeRätsel < 3) {
             	fertigeRätsel=0;       	
             	return response("Viel hast du ja nicht geschafft. Trotzdem bis zum nächsten Mal.");
         	}
@@ -156,7 +156,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	String result = "";
     	if(request.contains("Ja")) { 
     		alexaResponse = "Spielregeln";
-    		result = "Okay. Wenn du einen Tipp willst, sag einfach 'Tipp'! "
+    		result = "Okay. Mit Tipp kann ich dir bis zu zwei Tipps geben!"
     				+ "Du kannst Rätsel überspringen oder wiederholen! "
     				+ "Mit 'Lösung' sag ich dir die Lösung des Rätsels und falls wir unser Spiel beenden sollen, sag einfach: Schluss. "
     				+ "Das wärs dann auch schon. Möchtest du ein Kinder- oder Erwachsenenrätsel?";   		
@@ -177,33 +177,17 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	if(request.contains("kinder rätsel") || request.contains("kinder")) {
     		alexaResponse = "Kinderrätsel";       		
     		//Fall 1. Kinderrätsel
-    		if(fertigeRätsel == 0) {
-    			result = "Hier ist das erste Kinderrätsel: " + kinderRätsel[0];
-    			rätselFertig.add(zufallszahlK);
-    		}
-    		else {
-    			while(rätselFertig.contains(zufallszahlK)) {
-    				zufallszahlK = (int) (Math.random()*lastKinderrätsel+1);
-    			}
-    			result = kinderRätsel[0];	
-    			rätselFertig.add(zufallszahlK);
-    		}
+    		result = "Hier ist das erste Kinderrätsel: " + kinderRätsel[0];
+			rätselFertig.add(zufallszahlK);
+    		
     	}	
     		
     	else if (request.contains("erwachsenen rätsel") || request.contains("erwachsenen")) {
     		alexaResponse = "Erwachsenenrätsel";   		
     		//Fall 1. Erwachsenenrätsel
-    		if(fertigeRätsel == 0) {
-    			result = "Hier ist das erste Erwachsenenrätsel: " + erwachsenenRätsel[0];
-    			rätselFertig.add(zufallszahlE);
-    		}
-    		else {
-    			while(rätselFertig.contains(zufallszahlE)) {
-    				zufallszahlE = (int) (Math.random()*lastErwachsenenrätsel+1);
-    			}
-    			result = erwachsenenRätsel[0];	
-    			rätselFertig.add(zufallszahlE);
-    		}
+    		result = "Hier ist das erste Erwachsenenrätsel: " + erwachsenenRätsel[0];
+			rätselFertig.add(zufallszahlE);
+    		
     	}
     	else result = "Das habe ich leider nicht verstanden. Möchtest du ein Kinder- oder Erwachsenenrätsel?";
     	
@@ -502,7 +486,8 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	catch (SQLException e) {
     		e.printStackTrace();
     	}
-    	
+    	zufallszahlK= (int) (Math.random()*lastKinderrätsel+1);
+    	zufallszahlE = (int) (Math.random()*lastErwachsenenrätsel+1);
         return askUserResponse("Willkommen bei Rätsel Master. Soll ich dir die Spielregeln erklären?");
     }
 

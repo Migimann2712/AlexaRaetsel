@@ -78,9 +78,16 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         System.out.println("ZufallszahlK " + zufallszahlK);
         System.out.println("ZufallszahlE " + zufallszahlE);
         System.out.println(rätselFertig.toString());
+        System.out.println("lastE: " + lastErwachsenenrätsel);
+        System.out.println("lastK: " + lastKinderrätsel);
+        System.out.println("fertig: " + fertigeRätsel);
+        
         
         String[] kinderRätsel = getRaetsel("kinderrätsel", zufallszahlK);
         String[] erwachsenenRätsel = getRaetsel("erwachsenenrätsel", zufallszahlE);
+        
+        System.out.println(kinderRätsel[1]);
+        System.out.println(erwachsenenRätsel[1]);
         
         
         logger.info("Received following text: [" + userRequest + "]");
@@ -112,7 +119,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         
         // Nachdem man Kinderrätsel gewählt oder Tipp bekommen hat
         else if(alexaResponse.equals("Kinderrätsel") || alexaResponse.equals("Kinderrätsel_Tipp") ) {
-        	if(fertigeRätsel == lastKinderrätsel && (userRequest.contains(kinderRätsel[1]) || userRequest.contains("lösung")))
+        	if(fertigeRätsel >= lastKinderrätsel && (userRequest.contains(kinderRätsel[1]) || userRequest.contains("lösung")))
             	return response(responseKinderRaetsel(userRequest, kinderRätsel));
         	else
         		return askUserResponse(responseKinderRaetsel(userRequest, kinderRätsel));
@@ -120,7 +127,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         
         // Nachdem man Erwachsenenrätsel gewählt oder Tipp bekommen hat
         else if(alexaResponse.equals("Erwachsenenrätsel") || alexaResponse.equals("Erwachsenenrätsel_Tipp")) {
-        	if(fertigeRätsel == lastErwachsenenrätsel && (userRequest.contains(erwachsenenRätsel[1]) || userRequest.contains("lösung")))
+        	if(fertigeRätsel >= lastErwachsenenrätsel && (userRequest.contains(erwachsenenRätsel[1]) || userRequest.contains("lösung")))
             	return response(responseErwachsenenRaetsel(userRequest, erwachsenenRätsel));
         	else
         		return askUserResponse(responseErwachsenenRaetsel(userRequest,erwachsenenRätsel));
@@ -140,7 +147,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         // Kinderrätsel weiterspielen oder nicht
         else if(alexaResponse.equals("Antwort_Kinderrätsel")) {
         	if(userRequest.contains("Ja")) {
-        		return askUserResponse(responseRaetselart("kinder rätsel", kinderRätsel, erwachsenenRätsel));
+        		return askUserResponse(responseRaetselart("kinder rätsel", kinderRätsel, kinderRätsel));
         	}
         	else if(userRequest.contains("nein")) {
         		alexaResponse = "welcome message";
@@ -205,16 +212,16 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	// Lösung ausgeben
     	else if(request.contains("lösung")) {
     		// Falls letztes Rätsel ist
-    		if(fertigeRätsel == lastErwachsenenrätsel) {
+    		if(fertigeRätsel >= lastErwachsenenrätsel) {
     			result = "Die Lösung ist " + rätsel[1] + ". War schön mit dir gerätselt zu haben";
     			alexaResponse = "welcome message";
     			tippsErhalten = 0;
     			rätselFertig.clear();
     		}
     		else {
-        		zufallszahlE = (int) (Math.random()*lastErwachsenenrätsel+1);
+        		zufallszahlE = (int) (Math.random()*(lastErwachsenenrätsel+1));
         		while(rätselFertig.contains(zufallszahlE)) {
-        			zufallszahlE = (int) (Math.random()*lastErwachsenenrätsel+1);
+        			zufallszahlE = (int) (Math.random()*(lastErwachsenenrätsel+1));
         		}
         		String[] nextRätsel = getRaetsel("erwachsenenrätsel", zufallszahlE);
         		result = "Die Lösung ist " + rätsel[1] + ". Hier ist das nächste Rätsel: " + nextRätsel[0];
@@ -227,13 +234,12 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	// Rätsel überspringen
     	else if(request.contains("überspringe")) {
     		// Falls letztes Rätsel ist
-    		if(fertigeRätsel == lastErwachsenenrätsel) 
+    		if(fertigeRätsel >= lastErwachsenenrätsel) 
     			result = "Das ist das letzte Rätsel. Versuche es doch nochmal.";	
     		else {
-    			fertigeRätsel++;
-    	        zufallszahlE=(int) (Math.random()*lastErwachsenenrätsel+1);
+    	        zufallszahlE=(int) (Math.random()*(lastErwachsenenrätsel+1));
     	        while(rätselFertig.contains(zufallszahlE)) {
-        			zufallszahlE = (int) (Math.random()*lastErwachsenenrätsel+1);
+        			zufallszahlE = (int) (Math.random()*(lastErwachsenenrätsel+1));
         		}
     			String[] nextRätsel= getRaetsel("erwachsenenrätsel", zufallszahlE); 
         		result = "Dann eben nicht. Mal sehen, ob du das hier schon kennst: " + nextRätsel[0];
@@ -245,7 +251,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	
     	// Falls Lösung genannt wird
     	else if(request.contains(rätsel[1])) {			
-    		if(fertigeRätsel == lastErwachsenenrätsel) {
+    		if(fertigeRätsel >= lastErwachsenenrätsel) {
     			result = "Das ist richtig. War schön mit dir gerätselt zu haben";
     			alexaResponse = "welcome message";
     			fertigeRätsel = 0;
@@ -253,10 +259,9 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     			rätselFertig.clear();
     		}
     		else {
-    			fertigeRätsel++;
-    	        zufallszahlE=(int) (Math.random()*lastErwachsenenrätsel+1);
+    	        zufallszahlE=(int) (Math.random()*(lastErwachsenenrätsel+1));
     	        while(rätselFertig.contains(zufallszahlE)) {
-        			zufallszahlE = (int) (Math.random()*lastErwachsenenrätsel+1);
+        			zufallszahlE = (int) (Math.random()*(lastErwachsenenrätsel+1));
         		}
     			String[] nextRätsel = getRaetsel("erwachsenenrätsel", zufallszahlE); 
     			result = "Das ist richtig. Hier ist das nächste Rätsel: " + nextRätsel[0];
@@ -292,7 +297,6 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     // Kinder Rätsel
     private String responseKinderRaetsel(String request, String[] rätsel) {
     	String result = "";
-    	
     	// Rätsel wiederholen
     	if(request.contains("wiederhole")) 
     		result = rätsel[0];
@@ -300,7 +304,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	// Lösung ausgeben
     	else if(request.contains("lösung")) {
     		// Falls letztes Rätsel ist
-    		if(fertigeRätsel == lastKinderrätsel) {
+    		if(fertigeRätsel >= lastKinderrätsel) {
     			result = "Die Lösung ist " + rätsel[1] + ". War schön mit dir gerätselt zu haben";
     			alexaResponse = "welcome message";
     			fertigeRätsel = 0;
@@ -308,9 +312,9 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     			rätselFertig.clear();
     		}
     		else {
-        		zufallszahlK = (int) (Math.random()*lastKinderrätsel+1);
+        		zufallszahlK = (int) (Math.random()*(lastKinderrätsel+1));
         		while(rätselFertig.contains(zufallszahlK)) {
-        			zufallszahlK = (int) (Math.random()*lastKinderrätsel+1);
+        			zufallszahlK = (int) (Math.random()*(lastKinderrätsel+1));
         		}
         		String[] nextRätsel = getRaetsel("kinderrätsel", zufallszahlK);
         		result = "Die Lösung ist " + rätsel[1] + ". Hier ist das nächste Rätsel: " + nextRätsel[0];
@@ -323,24 +327,24 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	// Rätsel überspringen
     	else if(request.contains("überspringe")) {
     		// Falls letztes Rätsel ist
-    		if(fertigeRätsel == lastKinderrätsel) 
+    		if(fertigeRätsel >= lastKinderrätsel) 
     			result = "Das ist das letzte Rätsel. Versuche es doch nochmal.";	
     		else {
-    			fertigeRätsel++;
-    			zufallszahlK = (int) (Math.random()*lastKinderrätsel+1);
+    			zufallszahlK = (int) (Math.random()*(lastKinderrätsel+1));
         		while(rätselFertig.contains(zufallszahlK)) {
-        			zufallszahlK = (int) (Math.random()*lastKinderrätsel+1);
+        			zufallszahlK = (int) (Math.random()*(lastKinderrätsel+1));
         		}
     			String[] nextRätsel = getRaetsel("kinderrätsel", zufallszahlK); 
         		result = "Dann eben nicht. Mal sehen, ob du das hier schon kennst: " + nextRätsel[0];
+    			fertigeRätsel++;
         		tippsErhalten = 0;
         		rätselFertig.add(zufallszahlK);
     		}
     	}
     	
     	// Falls Lösung genannt wird
-    	else if(request.contains(rätsel[1])) {			
-    		if(fertigeRätsel == lastKinderrätsel) {
+    	else if(request.contains(rätsel[1])) {	
+    		if(fertigeRätsel >= lastKinderrätsel) {
     			result = "Das ist richtig. War schön mit dir gerätselt zu haben";
     			alexaResponse = "welcome message";
     			fertigeRätsel = 0;
@@ -348,13 +352,13 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     			rätselFertig.clear();
     		}
     		else {
-    			fertigeRätsel++;
-    			zufallszahlK = (int) (Math.random()*lastKinderrätsel);
+    			zufallszahlK = (int) (Math.random()*(lastKinderrätsel+1));
         		while(rätselFertig.contains(zufallszahlK)) {
-        			zufallszahlK = (int) (Math.random()*lastKinderrätsel);
+        			zufallszahlK = (int) (Math.random()*(lastKinderrätsel+1));
         		}
     			String[] nextRätsel = getRaetsel("kinderrätsel", zufallszahlK); 
     			result = "Das ist richtig. Hier ist das nächste Rätsel: " + nextRätsel[0];
+    			fertigeRätsel++;
     			tippsErhalten = 0;
     			rätselFertig.add(zufallszahlK);
     		}	
@@ -467,7 +471,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     private SpeechletResponse getWelcomeResponse(){  	
     	//Datenbank aufrufen
     	try {
-			con = DriverManager.getConnection("jdbc:sqlite:C:/Users/Lenovo/git/AlexaRaetsel/de.unidue.ltl.alexa/raetsel.db");
+			con = DriverManager.getConnection("jdbc:sqlite:C:/Users/Lenovo/git/AlexaRaetsel/de.unidue.ltl.alexa/raetsel_neu.db");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -486,8 +490,8 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	catch (SQLException e) {
     		e.printStackTrace();
     	}
-    	zufallszahlK= (int) (Math.random()*lastKinderrätsel+1);
-    	zufallszahlE = (int) (Math.random()*lastErwachsenenrätsel+1);
+    	zufallszahlK= (int) (Math.random()*(lastKinderrätsel+1));
+    	zufallszahlE = (int) (Math.random()*(lastErwachsenenrätsel+1));
         return askUserResponse("Willkommen bei Rätsel Master. Soll ich dir die Spielregeln erklären?");
     }
 

@@ -230,7 +230,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	// Falls Lösung genannt wird
     	else if(request.contains(rätsel[1])) {			
     		if(fertigeRätsel >= lastErwachsenenrätsel) {
-    			result= "<speak><audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/> Das ist richtig. War schön mit dir gerätselt zu haben</speak>";
+    			result= "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/> Das ist richtig. War schön mit dir gerätselt zu haben";
     			alexaResponse = "welcome message";
     			fertigeRätsel = 0;
     			tippsErhalten = 0;
@@ -324,7 +324,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	// Falls Lösung genannt wird
     	else if(request.contains(rätsel[1])) {	
     		if(fertigeRätsel >= lastKinderrätsel) {
-    			result ="<speak><audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/> Das ist richtig. War schön mit dir gerätselt zu haben</speak>";
+    			result ="<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/> Das ist richtig. War schön mit dir gerätselt zu haben";
     			alexaResponse = "welcome message";
     			fertigeRätsel = 0;
     			tippsErhalten = 0;
@@ -480,8 +480,10 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     private SpeechletResponse response(String text)
     {
         // Create the plain text output.
-        PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
-        speech.setText(text);
+//        PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
+//        speech.setText(text);
+    	SsmlOutputSpeech speech = new SsmlOutputSpeech();
+        speech.setSsml("<speak>" + text + "</speak>");
 
         return SpeechletResponse.newTellResponse(speech);
     }

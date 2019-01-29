@@ -1,11 +1,10 @@
 package com.amazon.customskill;
 
 import java.sql.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.IntStream;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -47,7 +46,14 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     
     // Gibt letzte Antwort von Alexa an
     String alexaResponse = "welcome message";
-
+    
+    String[] richtigeAntwort = {"Das ist richtig.", "Super.", "Korrekt.", "Toll gemacht.", "Sehr gut.", "Klasse."};
+    String[] nächstesRätsel = {" Hier ist das nächste Rätsel: ", " Jetzt kommt das nächste Rätsel: ", " Weiter gehts: ", " Wie wärs damit: ", " Versuch das mal: ", " Mal sehen ob du das rausbekommst: "};
+    String[] ende = {" War schön mit dir gerätselt zu haben.", " Bis zum nächsten mal.", " Lass uns bald wieder rätseln.", " Das Rätseln mit dir hat Spaß gemacht. Bis dann."};
+    String[] überspringe = {"Dann eben nicht. Mal sehen ob du das hier schon kennst: ", "Na gut. Wie wärs dann hiermit: ", "Schade. Probier das mal: ", "Dann halt nicht, Wie wäre es damit: "};   
+    String[] spielregeln = {"Alles klar, du Allwissender. ", "Okay du Schlaumeier. ", "Na gut, wenn du die schon kennst. ", "Dann halt nicht. "};
+    String[] falscheAntwort = {"Leider falsch. Versuch es noch einmal.", "Das war leider nicht richtig.", "Das war leider die falsche Antwort.", "Die Antwort war falsch. Denk nochmal drüber nach.", "Leider nicht richtig. Probiers nochmal."};
+    
     static Logger logger = LoggerFactory.getLogger(AlexaSkillSpeechlet.class);
     private PosTagger p;
 
@@ -69,7 +75,6 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     {
         IntentRequest request = requestEnvelope.getRequest();
         Intent intent = request.getIntent();
-        String result = "";
         
         userRequest = intent.getSlot("Alles").getValue();
         
@@ -93,7 +98,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         logger.info("Received following text: [" + userRequest + "]");
         
         // Falls man nicht mehr spielen möchte
-        if(userRequest.contains("schluss")) {
+        if(userRequest.contains("schluss") || userRequest.contains("stopp") || userRequest.contains("ende")) {
         	alexaResponse = "welcome message";
         	rätselFertig.clear();
         	// Falls man weniger als 2 Rätsel geschafft hat (zum Spaß)
@@ -103,7 +108,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         	}
         	else {
             	fertigeRätsel = 0;
-            	return response("War schön mit dir gerätselt zu haben.");
+            	return response(ende[(int)(Math.random()*ende.length)]);
         	}
         }
         
@@ -147,7 +152,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	}
     	else if(request.contains("nein")) {
     		alexaResponse = "Spielregeln";
-    		result = "Alles klar, du Allwissender. Möchtest du ein Kinder- oder Erwachsenenrätsel?";
+    		result = spielregeln[(int)(Math.random()*spielregeln.length)] + "Möchtest du ein Kinder- oder Erwachsenenrätsel?";
     	}
     	else 
     		result = "Das habe ich leider nicht verstanden. Soll ich dir die Spielregeln erklären?";
@@ -161,7 +166,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	if(request.contains("kinder rätsel") || request.contains("kinder")) {
     		alexaResponse = "Kinderrätsel";       		
     		//Fall 1. Kinderrätsel
-    		result = "Hier ist das erste Kinderrätsel: " + kinderRätsel[0];
+    		result = "Hier ist das erste Kinderrätsel: " + kinderRätsel[0] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
 			rätselFertig.add(zufallszahlK);
     		
     	}	
@@ -169,7 +174,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	else if (request.contains("erwachsenen rätsel") || request.contains("erwachsenen")) {
     		alexaResponse = "Erwachsenenrätsel";   		
     		//Fall 1. Erwachsenenrätsel
-    		result = "Hier ist das erste Erwachsenenrätsel: " + erwachsenenRätsel[0];
+    		result = "Hier ist das erste Erwachsenenrätsel: " + erwachsenenRätsel[0] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
 			rätselFertig.add(zufallszahlE);
     		
     	}
@@ -181,17 +186,16 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     // Erwachsenen Rätsel  
     private String responseErwachsenenRaetsel(String request, String[] rätsel) {
     	String result = "";
-    	SsmlOutputSpeech speech = new SsmlOutputSpeech();
     	
     	// Rätsel wiederholen
-    	if(request.contains("wiederhole")) 
-    		result = rätsel[0];
+    	if(request.contains("wiederhol") || request.contains("noch mal")) 
+    		result = rätsel[0] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     	
     	// Lösung ausgeben
     	else if(request.contains("lösung") || request.contains("keine ahnung") || request.contains("keinen plan") || request.contains("weiß nicht") || request.contains("fällt mir nicht ein") || request.contains("keine idee")|| request.contains("nicht drauf") || request.contains("nicht sagen") || request.contains("keinen blassen schimmer") || request.contains("auf dem schlauch") || request.contains("ratlos")) {
     		// Falls letztes Rätsel ist
     		if(fertigeRätsel >= lastErwachsenenrätsel) {
-    			result = "Die Lösung ist " + rätsel[1] + ". War schön mit dir gerätselt zu haben";
+    			result = "Die Lösung ist " + rätsel[1] + "." + ende[(int)(Math.random()*ende.length)];
     			alexaResponse = "welcome message";
     			tippsErhalten = 0;
     			rätselFertig.clear();
@@ -202,7 +206,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         			zufallszahlE = (int) (Math.random()*(lastErwachsenenrätsel+1));
         		}
         		String[] nextRätsel = getRaetsel("erwachsenenrätsel", zufallszahlE);
-        		result = "Die Lösung ist " + rätsel[1] + ". Hier ist das nächste Rätsel: " + nextRätsel[0];
+        		result = "Die Lösung ist " + rätsel[1] + "." + nächstesRätsel[(int)(Math.random()*nächstesRätsel.length)] + nextRätsel[0] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
         		fertigeRätsel++;
         		tippsErhalten = 0;
         		rätselFertig.add(zufallszahlE);
@@ -220,7 +224,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         			zufallszahlE = (int) (Math.random()*(lastErwachsenenrätsel+1));
         		}
     			String[] nextRätsel= getRaetsel("erwachsenenrätsel", zufallszahlE); 
-        		result = "Dann eben nicht. Mal sehen, ob du das hier schon kennst: " + nextRätsel[0];
+        		result = überspringe[(int)(Math.random()*überspringe.length)] + nextRätsel[0] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
         		fertigeRätsel++;
         		tippsErhalten = 0;
         		rätselFertig.add(zufallszahlE);
@@ -230,7 +234,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	// Falls Lösung genannt wird
     	else if(request.contains(rätsel[1])) {			
     		if(fertigeRätsel >= lastErwachsenenrätsel) {
-    			result= "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/> Das ist richtig. War schön mit dir gerätselt zu haben";
+    			result= "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/>" + richtigeAntwort[(int)(Math.random()*richtigeAntwort.length)] + ende[(int)(Math.random()*ende.length)];
     			alexaResponse = "welcome message";
     			fertigeRätsel = 0;
     			tippsErhalten = 0;
@@ -242,7 +246,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         			zufallszahlE = (int) (Math.random()*(lastErwachsenenrätsel+1));
         		}
     			String[] nextRätsel = getRaetsel("erwachsenenrätsel", zufallszahlE); 
-    			result ="<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/> Das ist richtig. Hier ist das nächste Rätsel: " + nextRätsel[0];
+    			result ="<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/>" + richtigeAntwort[(int)(Math.random()*richtigeAntwort.length)] + nächstesRätsel[(int)(Math.random()*nächstesRätsel.length)] + nextRätsel[0];
     			fertigeRätsel++;
     			tippsErhalten = 0;
     			rätselFertig.add(zufallszahlE);
@@ -250,23 +254,23 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	}
     	
     	// Tipp bekommen
-    	else if(request.contains("tipp") || request.contains("hilfe")) {	
+    	else if(request.contains("tipp") || request.contains("hilf") || request.contains("hinweis")) {	
     		alexaResponse = "Erwachsenenrätsel_Tipp";
     		if(tippsErhalten==0) {
-    			result = rätsel[2];
+    			result = rätsel[2] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     			tippsErhalten++;
     		}
     		else if(tippsErhalten==1) {
-    			result = rätsel[3];
+    			result = rätsel[3] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     			tippsErhalten++;
     		}
     		else
-    			result = "Du hast bereits alle Tipps erhalten.";
+    			result = "Du hast bereits alle Tipps erhalten. <audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     	}
     	
     	// Ungültige Eingabe
     	else 
-    		result = "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_negative_response_01'/>Leider falsch. Versuch es noch einmal.";
+    		result = "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_negative_response_01'/> " + falscheAntwort[(int)(Math.random()*falscheAntwort.length)] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     	
     	return result;
     }
@@ -275,16 +279,15 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     // Kinder Rätsel
     private String responseKinderRaetsel(String request, String[] rätsel) {
     	String result = "";
-    	SsmlOutputSpeech speech = new SsmlOutputSpeech();
     	// Rätsel wiederholen
-    	if(request.contains("wiederhole")) 
-    		result = rätsel[0];
+    	if(request.contains("wiederhol") || request.contains("noch mal")) 
+    		result = rätsel[0] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     	
     	// Lösung ausgeben
     	else if(request.contains("lösung") || request.contains("keine ahnung") || request.contains("keinen plan") || request.contains("weiß nicht") || request.contains("fällt mir nicht ein") || request.contains("keine idee")|| request.contains("nicht drauf") || request.contains("nicht sagen") || request.contains("keinen blassen schimmer") || request.contains("auf dem schlauch") || request.contains("ratlos")) {
     		// Falls letztes Rätsel ist
     		if(fertigeRätsel >= lastKinderrätsel) {
-    			result = "Die Lösung ist " + rätsel[1] + ". War schön mit dir gerätselt zu haben";
+    			result = "Die Lösung ist " + rätsel[1] + "." + ende[(int)(Math.random()*ende.length)];
     			alexaResponse = "welcome message";
     			fertigeRätsel = 0;
     			tippsErhalten = 0;
@@ -296,7 +299,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         			zufallszahlK = (int) (Math.random()*(lastKinderrätsel+1));
         		}
         		String[] nextRätsel = getRaetsel("kinderrätsel", zufallszahlK);
-        		result = "Die Lösung ist " + rätsel[1] + ". Hier ist das nächste Rätsel: " + nextRätsel[0];
+        		result = "Die Lösung ist " + rätsel[1] + ". " + nächstesRätsel[(int)(Math.random()*nächstesRätsel.length)] + nextRätsel[0] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
         		fertigeRätsel++;
         		tippsErhalten = 0;
         		rätselFertig.add(zufallszahlK);
@@ -314,7 +317,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         			zufallszahlK = (int) (Math.random()*(lastKinderrätsel+1));
         		}
     			String[] nextRätsel = getRaetsel("kinderrätsel", zufallszahlK); 
-        		result = "Dann eben nicht. Mal sehen, ob du das hier schon kennst: " + nextRätsel[0];
+        		result = überspringe[(int)(Math.random()*überspringe.length)] + nextRätsel[0] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     			fertigeRätsel++;
         		tippsErhalten = 0;
         		rätselFertig.add(zufallszahlK);
@@ -324,7 +327,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	// Falls Lösung genannt wird
     	else if(request.contains(rätsel[1])) {	
     		if(fertigeRätsel >= lastKinderrätsel) {
-    			result ="<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/> Das ist richtig. War schön mit dir gerätselt zu haben";
+    			result ="<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/>" + richtigeAntwort[(int)(Math.random()*richtigeAntwort.length)] + ende[(int)(Math.random()*ende.length)];
     			alexaResponse = "welcome message";
     			fertigeRätsel = 0;
     			tippsErhalten = 0;
@@ -336,7 +339,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         			zufallszahlK = (int) (Math.random()*(lastKinderrätsel+1));
         		}
     			String[] nextRätsel = getRaetsel("kinderrätsel", zufallszahlK); 
-    			result= "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/> Das ist richtig. Hier ist das nächste Rätsel: " + nextRätsel[0];
+    			result= "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/>" + richtigeAntwort[(int)(Math.random()*richtigeAntwort.length)] + nächstesRätsel[(int)(Math.random()*nächstesRätsel.length)] + nextRätsel[0];
     			fertigeRätsel++;
     			tippsErhalten = 0;
     			rätselFertig.add(zufallszahlK);
@@ -344,23 +347,23 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	}
     	
     	// Tipp bekommen
-    	else if(request.contains("tipp") || request.contains("hilfe")) {	
+    	else if(request.contains("tipp") || request.contains("hilf") || request.contains("hinweis")) {	
     		alexaResponse = "Kinderrätsel_Tipp";
     		if(tippsErhalten==0) {
-    			result = rätsel[2];
+    			result = rätsel[2] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     			tippsErhalten++;
     		}
     		else if(tippsErhalten==1) {
-    			result = rätsel[3];
+    			result = rätsel[3] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     			tippsErhalten++;
     		}
     		else
-    			result = "Du hast bereits alle Tipps erhalten.";
+    			result = "Du hast bereits alle Tipps erhalten. <audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     	}
     	
     	// Ungültige Eingabe
     	else 
-    		result = "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_negative_response_01'/>Leider falsch. Versuch es noch einmal.";
+    		result = "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_negative_response_01'/> " + falscheAntwort[(int)(Math.random()*falscheAntwort.length)] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     	
     	return result;
     }

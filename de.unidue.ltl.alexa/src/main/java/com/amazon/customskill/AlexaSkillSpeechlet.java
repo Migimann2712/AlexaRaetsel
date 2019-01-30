@@ -143,14 +143,14 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     // Spielregeln hören oder nicht
     private String responseSpielregeln(String request) {
     	String result = "";
-    	if(request.contains("Ja")) { 
+    	if(request.contains("Ja") || request.contains("klar") || request.contains("mach") || request.contains("hau raus")) { 
     		alexaResponse = "Spielregeln";
     		result = "Okay. Mit Tipp kann ich dir bis zu zwei Tipps geben!"
     				+ "Du kannst Rätsel überspringen oder wiederholen! "
     				+ "Mit 'Lösung' sag ich dir die Lösung des Rätsels und falls wir unser Spiel beenden sollen, sag einfach: Schluss. "
     				+ "Das wärs dann auch schon. Möchtest du ein Kinder- oder Erwachsenenrätsel?";   		
     	}
-    	else if(request.contains("nein")) {
+    	else if(request.contains("nein") || request.contains("nö") || request.contains("ne") || request.contains("nicht")) {
     		alexaResponse = "Spielregeln";
     		result = spielregeln[(int)(Math.random()*spielregeln.length)] + "Möchtest du ein Kinder- oder Erwachsenenrätsel?";
     	}
@@ -171,7 +171,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     		
     	}	
     		
-    	else if (request.contains("erwachsenen rätsel") || request.contains("erwachsenen")) {
+    	else if (request.contains("erwachsenen rätsel") || request.contains("erwachsen")) {
     		alexaResponse = "Erwachsenenrätsel";   		
     		//Fall 1. Erwachsenenrätsel
     		result = "Hier ist das erste Erwachsenenrätsel: " + erwachsenenRätsel[0] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
@@ -192,7 +192,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     		result = rätsel[0] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     	
     	// Lösung ausgeben
-    	else if(request.contains("lösung") || request.contains("keine ahnung") || request.contains("keinen plan") || request.contains("weiß nicht") || request.contains("fällt mir nicht ein") || request.contains("keine idee")|| request.contains("nicht drauf") || request.contains("nicht sagen") || request.contains("keinen blassen schimmer") || request.contains("auf dem schlauch") || request.contains("ratlos")) {
+    	else if(request.contains("lösung") || request.contains("keine ahnung") || request.contains("keinen plan") || request.contains("weiß nicht") || request.contains("fällt mir nicht ein") || request.contains("keine idee")|| request.contains("nicht drauf") || request.contains("nicht sagen") || request.contains("keinen blassen schimmer") || request.contains("auf dem schlauch") || request.contains("ratlos") || request.contains("weiß es nicht")) {
     		// Falls letztes Rätsel ist
     		if(fertigeRätsel >= lastErwachsenenrätsel) {
     			result = "Die Lösung ist " + rätsel[1] + "." + ende[(int)(Math.random()*ende.length)];
@@ -284,7 +284,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     		result = rätsel[0] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     	
     	// Lösung ausgeben
-    	else if(request.contains("lösung") || request.contains("keine ahnung") || request.contains("keinen plan") || request.contains("weiß nicht") || request.contains("fällt mir nicht ein") || request.contains("keine idee")|| request.contains("nicht drauf") || request.contains("nicht sagen") || request.contains("keinen blassen schimmer") || request.contains("auf dem schlauch") || request.contains("ratlos")) {
+    	else if(request.contains("lösung") || request.contains("keine ahnung") || request.contains("keinen plan") || request.contains("weiß nicht") || request.contains("fällt mir nicht ein") || request.contains("keine idee")|| request.contains("nicht drauf") || request.contains("nicht sagen") || request.contains("keinen blassen schimmer") || request.contains("auf dem schlauch") || request.contains("ratlos") || request.contains("weiß es nicht")) {
     		// Falls letztes Rätsel ist
     		if(fertigeRätsel >= lastKinderrätsel) {
     			result = "Die Lösung ist " + rätsel[1] + "." + ende[(int)(Math.random()*ende.length)];

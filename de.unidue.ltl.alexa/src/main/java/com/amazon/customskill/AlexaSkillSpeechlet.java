@@ -453,7 +453,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     private SpeechletResponse getWelcomeResponse(){  	
     	//Datenbank aufrufen
     	try {
-			con = DriverManager.getConnection("jdbc:sqlite:C:/Users/Lenovo/git/AlexaRaetsel/de.unidue.ltl.alexa/raetsel_final.db");
+			con = DriverManager.getConnection("jdbc:sqlite:C:/Users/migim/git/AlexaRaetsel/de.unidue.ltl.alexa/raetsel_final.db");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

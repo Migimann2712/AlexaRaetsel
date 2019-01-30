@@ -98,7 +98,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         logger.info("Received following text: [" + userRequest + "]");
         
         // Falls man nicht mehr spielen möchte
-        if(userRequest.contains("schluss") || userRequest.contains("stopp") || userRequest.contains("ende")) {
+        if(userRequest.contains("schluss") || userRequest.contains("stopp") || userRequest.contains("ende") || userRequest.contains("aufhören") || userRequest.contains("hör auf") || userRequest.contains("keine Lust")) {
         	alexaResponse = "welcome message";
         	rätselFertig.clear();
         	// Falls man weniger als 2 Rätsel geschafft hat (zum Spaß)
@@ -187,7 +187,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     private String responseErwachsenenRaetsel(String request, String[] rätsel) {
     	String result = "";
     	
-    	// Rätsel wiederholen
+    	// Rätsel holen
     	if(request.contains("wiederhol") || request.contains("noch mal")) 
     		result = rätsel[0] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     	
@@ -214,7 +214,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	}
     	
     	// Rätsel überspringen
-    	else if(request.contains("überspringe")) {
+    	else if(request.contains("überspring") || request.contains("nächste")) {
     		// Falls letztes Rätsel ist
     		if(fertigeRätsel >= lastErwachsenenrätsel) 
     			result = "Das ist das letzte Rätsel. Versuche es doch nochmal.";	
@@ -246,7 +246,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         			zufallszahlE = (int) (Math.random()*(lastErwachsenenrätsel+1));
         		}
     			String[] nextRätsel = getRaetsel("erwachsenenrätsel", zufallszahlE); 
-    			result ="<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/>" + richtigeAntwort[(int)(Math.random()*richtigeAntwort.length)] + nächstesRätsel[(int)(Math.random()*nächstesRätsel.length)] + nextRätsel[0];
+    			result ="<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/>" + richtigeAntwort[(int)(Math.random()*richtigeAntwort.length)] + nächstesRätsel[(int)(Math.random()*nächstesRätsel.length)] + nextRätsel[0] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     			fertigeRätsel++;
     			tippsErhalten = 0;
     			rätselFertig.add(zufallszahlE);
@@ -307,7 +307,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     	}
     	
     	// Rätsel überspringen
-    	else if(request.contains("überspringe")) {
+    	else if(request.contains("überspring") || request.contains("nächste")) {
     		// Falls letztes Rätsel ist
     		if(fertigeRätsel >= lastKinderrätsel) 
     			result = "Das ist das letzte Rätsel. Versuche es doch nochmal.";	
@@ -339,7 +339,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         			zufallszahlK = (int) (Math.random()*(lastKinderrätsel+1));
         		}
     			String[] nextRätsel = getRaetsel("kinderrätsel", zufallszahlK); 
-    			result= "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/>" + richtigeAntwort[(int)(Math.random()*richtigeAntwort.length)] + nächstesRätsel[(int)(Math.random()*nächstesRätsel.length)] + nextRätsel[0];
+    			result= "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_positive_response_01'/>" + richtigeAntwort[(int)(Math.random()*richtigeAntwort.length)] + nächstesRätsel[(int)(Math.random()*nächstesRätsel.length)] + nextRätsel[0] + "<audio src='soundbank://soundlibrary/ui/gameshow/amzn_ui_sfx_gameshow_countdown_loop_32s_full_01'/>";
     			fertigeRätsel++;
     			tippsErhalten = 0;
     			rätselFertig.add(zufallszahlK);

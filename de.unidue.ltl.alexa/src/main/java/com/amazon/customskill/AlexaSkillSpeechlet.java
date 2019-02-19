@@ -102,13 +102,15 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         if(contains(userRequest, requestSchluss) == true) {
         	alexaResponse = "welcome message";
         	rätselFertig.clear();
-        	// Falls man weniger als 2 Rätsel geschafft hat (zum Spaß)
+        	// Falls man weniger als 3 Rätsel geschafft hat (zum Spaß)
         	if(anzahlFertigeRätsel < 3) {
-            	anzahlFertigeRätsel=0;       	
+            	anzahlFertigeRätsel=0;
+            	tippsErhalten = 0;
             	return response("Viel hast du ja nicht geschafft. Trotzdem bis zum nächsten Mal.");
         	}
         	else {
             	anzahlFertigeRätsel = 0;
+            	tippsErhalten = 0;
             	return response(ende[(int)(Math.random()*ende.length)]);
         	}
         }
@@ -260,7 +262,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     			tippsErhalten++;
     		}
     		else
-    			result = "Du hast bereits alle Tipps erhalten."/* + soundLoop*/;
+    			result = "Du hast bereits alle Tipps erhalten. Ich wiederhole dir die beiden Tipps nochmal. Hier ist Tipp Nummer 1: " + tipp1 + " Und hier ist Tipp Nummer 2: " + tipp2 /* + soundLoop*/;
     	}
     	
     	// Ungültige Eingabe
@@ -309,6 +311,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         logger.info("Alexa session ends now");
 		alexaResponse = "welcome message";
         anzahlFertigeRätsel = 0;
+        tippsErhalten = 0;
         rätselFertig.clear();
     }
 
@@ -318,7 +321,7 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
     private SpeechletResponse getWelcomeResponse(){  	
     	//Datenbank aufrufen
     	try {
-			con = DriverManager.getConnection("jdbc:sqlite:C:/Users/Lenovo/git/AlexaRaetsel/de.unidue.ltl.alexa/raetsel_neu.db");
+			con = DriverManager.getConnection("jdbc:sqlite:C:/Users/migim/git/AlexaRaetsel/de.unidue.ltl.alexa/raetsel_final.db");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -363,8 +366,18 @@ public class AlexaSkillSpeechlet implements SpeechletV2 {
         speech.setSsml("<speak>" + text + "</speak>");
 
         SsmlOutputSpeech repromptSpeech = new SsmlOutputSpeech();
-        repromptSpeech.setSsml("<speak><emphasis level=\"strong\">Hey!</emphasis>Wenn du Hilfe brauchst kannst du mich auch nach einem Tipp fragen.</speak>");
-
+        if (alexaResponse.equals("Kinderrätsel") || alexaResponse.equals("Erwachsenenrätsel"))
+        	//Wenn man sich bei den Rätseln befindet
+        	repromptSpeech.setSsml("<speak><emphasis level=\"strong\">Hey!</emphasis>Wenn du Hilfe brauchst kannst du mich auch nach einem Tipp fragen.</speak>");
+        
+        else if(alexaResponse.equals("welcome message"))
+        	//Wenn man sich in der welcome message befindet
+        	repromptSpeech.setSsml("<speak><emphasis level=\"strong\">Hey!</emphasis>Soll ich dir die Spielregeln erklären?</speak>");
+        
+        else
+        	//Wenn man sich bei den Spielregeln befindet
+        	repromptSpeech.setSsml("<speak><emphasis level=\"strong\">Hey!</emphasis>Möchtest du ein Kinder- oder Erwachsenenrätsel?</speak>");
+        
         Reprompt rep = new Reprompt();
         rep.setOutputSpeech(repromptSpeech);
 

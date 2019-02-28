@@ -1,7 +1,7 @@
 # AlexaRaetsel
 
 **Gruppenmitglieder:**
-Miguel Schrader (3052554), Oleg Schinkin (3031465), Jaqueline Kruse (3032113), Hannah Rossow (3050147), Lina Peters (), Annika Steinkamp ()  
+Miguel Schrader (3052554), Oleg Schinkin (3031465), Jaqueline Kruse (3032113), Hannah Rossow (3050147), Lina Peters (3051896), Annika Steinkamp ()  
 __________________________________________________________________________________________________________________________  
 
 ## Brainstorming
@@ -98,8 +98,7 @@ Our second goal was eventually achieved by implementing the riddles in a databan
 
 ## Installation of the required Software
 To use "Rätselmaster" the user needs to install Tomcat, Java, ngrok, Eclipse and create a github account to access the files. There the user can attain the framework (main skelleton) and import it as a maven project. The user needs to open Eclipse and the folder Alexaskelleton. With the right mouse click on team – pull he can download the code.  
-The user has to create the .war file. To do this, the user has to click with the right mouse button on our project and click Run As -> Maven Install. After the .war file is created and the Tomcat is installed the user has to export the .war-file in the Tomcat folder webapps. After that, the user has to click on the Tomcat folder, then on the folder bin and then he has to open startup.bat. He also needs to open ngrok and write the endpoint link ngrok http 8080 in the first row. He then needs to copy the https part in the browser and add myskill/ behind.  
-By configuring third party libraries as …. we were able to access and use those as well.   
+The user has to create the .war file. To do this, the user has to click with the right mouse button on our project and click Run As -> Maven Install. After the .war file is created and the Tomcat is installed the user has to export the .war-file in the Tomcat folder webapps. After that, the user has to click on the Tomcat folder, then on the folder bin and then he has to open startup.bat. He also needs to open ngrok and write the endpoint link ngrok http 8080 in the first row. He then needs to copy the https part in the browser and add myskill/ behind.     
 In order to test the skill, we needed to install the Java Servlet, a platform-independent method for building our own webbased application. The servlet was used to connect to the Java Web Server and the Server Container.   
 Additionally a SSL-tunnel (ngrok) is needed to run the application.   
 
@@ -122,7 +121,7 @@ By implementing request containts (179) we tried to decrease that Alexa might no
 
 The class AlexaSkillSpeechlet includes the basic declarations, such as the last answer given from Alexa and the number of the given tips.   
 The sounds are hard-coded in the class as well (57). Therefor we decided for a negative and a positive sound regarding the answer the user could give.   
-To keep the interactions more flexible and fun, we implemented Strings containing different responses such as “Alles klar, du Alwissender!” or “Dann halt nicht.”. (62)   
+To keep the interactions more flexible and fun, we implemented Strings containing different responses such as “Alles klar, du Alwissender!” or “Dann halt nicht.” (62).   
 To provide for all contingencies of answers, we tried to implement many possible answers the user could say. These are also coded as Strings.   
 
 ## Outlook

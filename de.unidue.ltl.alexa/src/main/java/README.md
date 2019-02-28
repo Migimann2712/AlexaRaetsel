@@ -1,7 +1,7 @@
 # AlexaRaetsel
 
 **Gruppenmitglieder:**
-Miguel Schrader (3052554), Oleg Schinkin (3031465), Jaqueline Kruse (3032113), Hannah Rossow (3050147), Lina Peters (3051896), Annika Steinkamp ()  
+Miguel Schrader (3052554), Oleg Schinkin (3031465), Jaqueline Kruse (3032113), Hannah Rossow (3050147), Lina Peters (3051896), Annika Steinkamp (3052347)  
 __________________________________________________________________________________________________________________________  
 
 ## Brainstorming
